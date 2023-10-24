@@ -4,12 +4,22 @@ import os
 import sys
 sys.stdout.reconfigure(encoding='utf-8') # So the output can print the unicode characters in the JSON
 
-def main():
-    def get_json_from_api(url: str, excel: bool) -> dict:
+class JsonAPI():
+
+    def get_json_from_api(self, url: str, excel: bool, **kwargs) -> dict:
+        '''kwargs: auth, verify - e.g auth=('user', 'pass')
+        
+        For authenticaion, use requests.Session()
+
+        session.auth = (user, password)
+
+        auth = session.post(url)
+
+        response = session.get(url)'''
         dict_of_dfs = {} # dictionary to store the JSON response keys as dataframes
 
         try:
-            req = requests.get(url) # GET request for some dummy JSON data from the API, use 'auth' and 'verify' args for authentication if needed
+            req = requests.get(url, **kwargs) # GET request for some dummy JSON data from the API, use 'auth' and 'verify' args for authentication if needed
         except Exception as e:
             print(f'Bad request. {e}')
             return
@@ -37,11 +47,11 @@ def main():
                 pass
 
         if excel:
-            json_dfs_to_excel(dict_of_dfs) # put the dict of dfs into excel
+            self.json_dfs_to_excel(dict_of_dfs) # put the dict of dfs into excel
 
         return dict_of_dfs
     
-    def json_dfs_to_excel(data: dict):
+    def json_dfs_to_excel(self, data: dict):
         dict_of_dfs = data
 
         if not len(dict_of_dfs.keys()) < 1: # write the first key to excel - writer can only 'append' sheets on an existing excel file, so create one
@@ -58,8 +68,8 @@ def main():
 
         print(f"JSON API response saved as Excel: {os.getcwd()}\json_response.xlsx")
 
-
-    get_json_from_api(url='https://dummyjson.com/users', excel=True) # Run the GET request
+    def main(self):
+        self.get_json_from_api(url='https://dummyjson.com/users', excel=True) # Run the GET request, use **kwargs 'auth' and 'verify'
 
 if __name__ == "__main__":
-    main()
+    JsonAPI.main()
