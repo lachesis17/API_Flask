@@ -72,4 +72,5 @@ class JsonAPI():
         self.get_json_from_api(url='https://dummyjson.com/users', excel=True) # Run the GET request, use **kwargs 'auth' and 'verify'
 
 if __name__ == "__main__":
-    JsonAPI.main()
+    json_api = JsonAPI()
+    json_api.main()
